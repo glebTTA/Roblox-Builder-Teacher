@@ -3,9 +3,11 @@
 script.Parent.Touched:Connect(function(hit)
     local humanoid = hit.Parent:FindFirstChild("Humanoid")
     if humanoid then
-        humanoid.JumpPower = humanoid.JumpPower + 20 -- Increase jump power
+        humanoid.JumpPower = humanoid.JumpPower + 20 
+        humanoid.JumpPower = true 
         wait(10) -- Boost lasts 10 seconds
-        humanoid.JumpPower = humanoid.JumpPower - 20 -- Reset jump power
+        humanoid.JumpPower = humanoid.JumpPower - 20 
+        humanoid.JumpPower = false 
         script.Parent:Destroy()
     end
 end)
