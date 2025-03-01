@@ -1,0 +1,52 @@
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+
+local npc = script.Parent
+local rootPart = npc:FindFirstChild("HumanoidRootPart")
+local humanoid = npc:FindFirstChildOfClass("Humanoid")
+
+if not rootPart or not humanoid then
+    warn("NPC is missing HumanoidRootPart or Humanoid")
+    return
+end
+
+-- Function to damage the player when touched
+rootPart.Touched:Connect(function(hit)
+    local character = hit.Parent
+    local player = Players:GetPlayerFromCharacter(character)
+
+    if player and character:FindFirstChildOfClass("Humanoid") then
+        character:FindFirstChildOfClass("Humanoid").Health = 0 -- Damage player
+    end
+end)
+
+-- Function to follow the nearest player
+local function followNearestPlayer()
+    while true do
+        local closestPlayer = nil
+        local shortestDistance = math.huge -- Start with a large number
+
+        for _, player in pairs(Players:GetPlayers()) do
+            local character = player.Character
+            if character then
+                local playerRoot = character:FindFirstChild("HumanoidRootPart")
+                if playerRoot then
+                    local distance = (playerRoot.Position - rootPart.Position).Magnitude
+                    if distance <= 25 and distance < shortestDistance then
+                        closestPlayer = playerRoot
+                        shortestDistance = distance
+                    end
+                end
+            end
+        end
+
+        if closestPlayer then
+            humanoid:MoveTo(closestPlayer.Position) -- Move towards the player
+        end
+
+        RunService.Heartbeat:Wait() -- Wait for the next frame
+    end
+end
+
+-- Start following players
+task.spawn(followNearestPlayer)
